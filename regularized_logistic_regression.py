@@ -2,21 +2,26 @@ import numpy as np
 import pandas as pd
 from ucimlrepo import fetch_ucirepo
 
+
 def sigmoid(z):
     return 1/(1+np.exp(-z))
 
-class SampleData():
+
+class SampleData:
     def __init__(self,x,y):
         x = np.asarray(x, dtype=float) # avoid x being a list
         y = np.asarray(y, dtype=float) # avoid y being a list
         self.x = x
         self.y = y
-        
+
+    
     """
     alpha is the learning rate
     iterations is the number interations
     lambda is the regularization strength
     """
+
+
 class LogisticRegression(SampleData):
     def __init__(self,x,y,alpha=0.01,iterations=10000,lambda_=0.01):
         super().__init__(x,y)
@@ -35,13 +40,13 @@ class LogisticRegression(SampleData):
         # "(self.lambda_/self.m)*self.weights" is the regularizer
         db = (1/self.m) * np.sum(error) # gradient of the bias
         return dw, db
-    
+
     def gradient_descent(self):
         for i in range(self.iterations):
             dw, db = self.get_gradient()
             self.weights -= self.alpha * dw
             self.bias -= self.alpha * db # gradient descent
-            
+
             if i % 500 == 0:
                 loss = (-1/self.m) * (self.y.T @ np.log(self.y_pred) + (1 - self.y).T @ np.log(1 - self.y_pred))+ (self.lambda_/2)*self.weights.T@self.weights
                 # "(self.lambda_/2)*self.weights.T@self.weights" is the regularizer
@@ -51,6 +56,7 @@ class LogisticRegression(SampleData):
                 self.alpha = 0.001 # reduce the learning rate to reduce the step size
 
         return self.weights, self.bias, loss
+
 
 if __name__ == "__main__":
     bank_marketing = fetch_ucirepo(id=222) # import data
