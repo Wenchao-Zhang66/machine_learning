@@ -45,16 +45,17 @@ class LogisticRegression(SampleData):
 
         return self.weights, self.bias, loss
 
-bank_marketing = fetch_ucirepo(id=222)
-X = bank_marketing.data.features 
-x = pd.get_dummies(X, dtype=float)
-x = (x-x.mean(axis=0))/(x.std(axis=0)+1e-9)
-y = bank_marketing.data.targets
-y = y.replace({'no': 0, 'yes': 1}).astype(float)
-gd = LogisticRegression(x, y, alpha=0.01, iterations=10000, lambda_=0.01)
-print("*******Training started*******")
-optimal_weights, optimal_bias, final_loss = gd.gradient_descent()
-print("*******Training completed*******")
-print(f"final loss: {final_loss}")
-print(f"Optimal Weights: {optimal_weights.flatten()}")
-print(f"Optimal Bias: {optimal_bias}")
+if __name__ == "__main__":
+    bank_marketing = fetch_ucirepo(id=222)
+    X = bank_marketing.data.features 
+    x = pd.get_dummies(X, dtype=float)
+    x = (x-x.mean(axis=0))/(x.std(axis=0)+1e-9)
+    y = bank_marketing.data.targets
+    y = y.replace({'no': 0, 'yes': 1}).astype(float)
+    gd = LogisticRegression(x, y, alpha=0.01, iterations=10000, lambda_=0.01)
+    print("*******Training started*******")
+    optimal_weights, optimal_bias, final_loss = gd.gradient_descent()
+    print("*******Training completed*******")
+    print(f"final loss: {final_loss}")
+    print(f"Optimal Weights: {optimal_weights.flatten()}")
+    print(f"Optimal Bias: {optimal_bias}")
