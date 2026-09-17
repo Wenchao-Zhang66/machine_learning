@@ -9,10 +9,8 @@ def sigmoid(z):
 
 class SampleData:
     def __init__(self,x,y):
-        x = np.asarray(x, dtype=float) # avoid x being a list
-        y = np.asarray(y, dtype=float) # avoid y being a list
-        self.x = x
-        self.y = y
+        self.x = np.asarray(x, dtype=float) # avoid x being a list
+        self.y = np.asarray(y, dtype=float) # avoid y being a list
 
 
 class LogisticRegression(SampleData):
@@ -29,8 +27,8 @@ class LogisticRegression(SampleData):
         self.z = self.x @ self.weights + self.bias
         self.y_pred = np.clip(sigmoid(self.z), 1e-9, 1 - 1e-9) # prediction
         error = self.y_pred - self.y
-        dw = (1/self.m) * self.x.T @ error + (self.lambda_/self.m)*self.weights # gradient of the weight
-        # "(self.lambda_/self.m)*self.weights" is the regularizer
+        dw_reg = self.lambda_ * self.weights # regularization term for weight
+        dw = (1/self.m) * self.x.T @ error + dw_reg # gradient of the weight
         db = (1/self.m) * np.sum(error) # gradient of the bias
         return dw, db
 
@@ -41,8 +39,10 @@ class LogisticRegression(SampleData):
             self.bias -= self.lr * db # gradient descent
 
             if i % 500 == 0:
-                loss = (-1/self.m) * (self.y.T @ np.log(self.y_pred) + (1 - self.y).T @ np.log(1 - self.y_pred))+ (self.lambda_/2)*self.weights.T @ self.weights
-                # "(self.lambda_/2)*self.weights.T@self.weights" is the regularizer
+                reg = (self.lambda_/2) * self.weights.T @ self.weights # regularization term
+                term1 = self.y.T @ np.log(self.y_pred)
+                term2 = (1 - self.y).T @ np.log(1 - self.y_pred)
+                loss = (-1/self.m) * (term1 + term2) + reg
                 print(f"Iteration {i}: Loss = {loss}")
             
             if i == 6000:
@@ -59,8 +59,8 @@ if __name__ == "__main__":
     y = bank_marketing.data.targets
     y = y.replace({'no': 0, 'yes': 1}).astype(float) # convert strings to numbers
     gd = LogisticRegression(x, y, lr=0.01, iterations=10000, lambda_=0.01)
-    print(f"number of samples:{x.shape[0]}")
-    print(f"number of features:{x.shape[1]}")
+    print(f"number of samples: {x.shape[0]}")
+    print(f"number of features: {x.shape[1]}")
     print("*******Training started*******")
     optimal_weights, optimal_bias, final_loss = gd.gradient_descent()
     print("*******Training completed*******")
