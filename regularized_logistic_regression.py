@@ -3,10 +3,6 @@ import pandas as pd
 from ucimlrepo import fetch_ucirepo
 
 
-def sigmoid(z):
-    return 1/(1+np.exp(-z))
-
-
 class SampleData:
     def __init__(self,x,y):
         self.x = np.asarray(x, dtype=float) # avoid x being a list
